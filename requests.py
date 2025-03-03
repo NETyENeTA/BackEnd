@@ -9,16 +9,16 @@ class TaskSchema(BaseModel):
     title: str
     completed: bool
     user: int
-
+    
     model_config = ConfigDict(from_attributes=True)
 
 
 async def add_user(tg_id):
     async with async_session() as session:
-        user = await session.scalar(select(User).where(User.idTg == tg_id))
+        user = await session.scalar(select(User).where(User.tg_id == tg_id))
         if user:
             return user
-
+        
         new_user = User(tg_id=tg_id)
         session.add(new_user)
         await session.commit()
@@ -29,13 +29,13 @@ async def add_user(tg_id):
 async def get_tasks(user_id):
     async with async_session() as session:
         tasks = await session.scalars(
-            select(Task).where(Task.userID == user_id, Task.completed == False)
+            select(Task).where(Task.user == user_id, Task.completed == False)
         )
-
+        
         serialized_tasks = [
             TaskSchema.model_validate(t).model_dump() for t in tasks
         ]
-
+        
         return serialized_tasks
 
 

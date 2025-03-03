@@ -20,11 +20,11 @@ class CompleteTask(BaseModel):
 @asynccontextmanager
 async def lifespan(app_: FastAPI):
     await init_db()
-    print('BOT Is Ready')
+    print('Bot is ready')
     yield
 
 
-app = FastAPI(title="Application", lifespan=lifespan)
+app = FastAPI(title="To Do App", lifespan=lifespan)
 
 
 app.add_middleware(
