@@ -1,0 +1,11 @@
+Telegram Web Apps API:
+https://core.telegram.org/bots/webapps
+
+Telegram Bot API:
+https://core.telegram.org/bots/api
+
+Создание Telegram Mini App с нуля:
+https://habr.com/ru/articles/743880/
+
+GitHub Pages: Хостинг для веб-приложений:
+https://pages.github.com/
