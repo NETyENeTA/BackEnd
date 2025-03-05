@@ -19,5 +19,13 @@ app = FastAPI(lifespan=life_span)
 app.include_router(userRoute)
 app.include_router(taskRoute)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://pigeoncoin.ru"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 # if __name__ == '__main__':
 #     uvicorn.run('main:app', reload=True)
