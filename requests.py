@@ -1,5 +1,6 @@
 from sqlalchemy import select, update, delete, func
-from datebase import Session
+from datebase import Session, QUOTES
+from random import randint as rnd
 import schems
 import models
 
@@ -13,8 +14,8 @@ async def add_account(account: schems.User):
             session.add(account)
             await session.commit()
             return {'status': 'ok'}
-    except:
-        return {"status": "Error", "message": "Incorrect format"}
+    except Exception as e:
+        return {"status": "critical-error", "message": e}
 
 
 async def get_account(account: schems.UserGet):
@@ -28,6 +29,19 @@ async def get_account(account: schems.UserGet):
     except:
         return {"status": "Error", "message": "User not in DB"}
 
+async def get_tasks(task: schems.TaskGet):
+    try:
+        async with Session() as session:
+            tasks: list[models.Task] = await session.scalars(select(models.Task).where(models.Task.userID == task.userID))
+
+            if len(tasks) != 0 and tasks:
+                formatted = []
+                for task in tasks:
+                    formatted.append({"title": task.title})
+                return {tasks: formatted}
+            return {"status": "error", "message": "user is indefined"}
+    except Exception as e:
+        return {"status": "critical-error", "message": e}
 
 
 async def add_task(task: schems.Task):
@@ -40,17 +54,19 @@ async def add_task(task: schems.Task):
             await session.commit()
             return {'status': 'ok'}
     except:
-        return {"status": "Error", "message": "Incorrect format"}
+        return {"status": "Error", "message": f"Incorrect format"}
 
-async def set_completed_task(task_get: schems.TaskSet):
+async def del_task(task_del: schems.TaskDelete):
     try:
         async with Session() as session:
-            task: models.Task = session.scalar(select(models.Task).where(models.Task.id == task_get.taskID, models.Task.userID == task_get.userID))
+            task: models.Task | None = await session.scalar(select(models.Task).where(models.Task.id == task_del.id))
             if task:
-                task.completed = task_get.completed
-                await session.refresh(task)
+                session.delete(task)
                 await session.commit()
                 return {"status": "ok"}
-            return {"status": "invalid-user", "message": "this user has no access rights"}
-    except:
-        return {"status": "invalid-user", "message": "this user has no access rights"}
+            return {"status": "error", "message": "task id is out in massive"}
+    except Exception as e:
+        return {"status": "critical-error", "message": e}
+
+async def get_quote():
+    return QUOTES[rnd(0, len(QUOTES) - 1)]

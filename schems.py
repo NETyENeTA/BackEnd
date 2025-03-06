@@ -10,13 +10,13 @@ class User(UserGet):
     Surname: str
     SecondName: str
 
-class TaskSet(BaseModel):
+class TaskGet(BaseModel):
     userID: int
-    taskID: int
-    completed: bool
 
-class Task(BaseModel):
-    userID: int
+class TaskDelete(BaseModel):
+    id: int
+
+class Task(TaskDelete):
     title: str
 
 

@@ -20,4 +20,4 @@ class Task(Model):
     userID: Mapped[int]
 
     title: Mapped[str]
-    completed: Mapped[bool] = False
+    completed: Mapped[bool] = mapped_column(default=False)
